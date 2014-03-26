@@ -160,7 +160,6 @@ Makefile: ..\WebGames\WebGames.pro ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_6
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\exclusive_builds.prf \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\default_pre.prf \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\win32\default_pre.prf \
-		..\WebGames\html5applicationviewer\html5applicationviewer.pri \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\resolve_config.prf \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\exclusive_builds_post.prf \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\default_post.prf \
@@ -179,18 +178,8 @@ Makefile: ..\WebGames\WebGames.pro ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_6
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\yacc.prf \
 		..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\lex.prf \
 		..\WebGames\WebGames.pro \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5WebKitWidgets.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5MultimediaWidgets.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Quick.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Positioning.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5OpenGL.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5PrintSupport.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5WebKit.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Multimedia.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Qml.prl \
 		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Widgets.prl \
 		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Network.prl \
-		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Sensors.prl \
 		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Gui.prl \
 		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Core.prl \
 		C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/libEGLd.prl \
@@ -283,7 +272,6 @@ Makefile: ..\WebGames\WebGames.pro ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_6
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\exclusive_builds.prf:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\default_pre.prf:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\win32\default_pre.prf:
-..\WebGames\html5applicationviewer\html5applicationviewer.pri:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\resolve_config.prf:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\exclusive_builds_post.prf:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\default_post.prf:
@@ -302,18 +290,8 @@ Makefile: ..\WebGames\WebGames.pro ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_6
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\yacc.prf:
 ..\..\..\..\..\..\Qt\Qt5.2.0\5.2.0\msvc2012_64\mkspecs\features\lex.prf:
 ..\WebGames\WebGames.pro:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5WebKitWidgets.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5MultimediaWidgets.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Quick.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Positioning.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5OpenGL.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5PrintSupport.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5WebKit.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Multimedia.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Qml.prl:
 C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Widgets.prl:
 C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Network.prl:
-C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Sensors.prl:
 C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Gui.prl:
 C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/Qt5Core.prl:
 C:/Qt/Qt5.2.0/5.2.0/msvc2012_64/lib/libEGLd.prl:
@@ -333,11 +311,6 @@ clean: debug-clean release-clean FORCE
 distclean: debug-distclean release-distclean FORCE
 	-$(DEL_FILE) Makefile
 	-$(DEL_FILE) WebGames.pdb
-
-first: $(first) copydeploymentfolders
-
-copydeploymentfolders:
-	@echo Copying application data... && $(COPY_DIR) "C:\Users\David\Documents\GitHub\493-Group-Project\WebGames\html" "C:\Users\David\Documents\GitHub\493-Group-Project\build-WebGames-Desktop_Qt_5_2_0_MSVC2012_64bit-Debug\html"
 
 debug-mocclean:
 	@set MAKEFLAGS=$(MAKEFLAGS)

@@ -1,16 +1,28 @@
-greaterThan(QT_MAJOR_VERSION, 4):QT += widgets webkitwidgets
+#-------------------------------------------------
+#
+# Project created by QtCreator 2014-03-25T22:33:26
+#
+#-------------------------------------------------
 
-# Add more folders to ship with the application, here
-folder_01.source = html
-folder_01.target = .
-DEPLOYMENTFOLDERS = folder_01
+QT       += core gui
+QT       += network
 
-# Define TOUCH_OPTIMIZED_NAVIGATION for touch optimization and flicking
-#DEFINES += TOUCH_OPTIMIZED_NAVIGATION
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+TARGET = WebGames
+TEMPLATE = app
 
-# Please do not modify the following two lines. Required for deployment.
-include(html5applicationviewer/html5applicationviewer.pri)
-qtcAddDeployment()
+
+SOURCES += main.cpp\
+    lobbywindow.cpp \
+    server.cpp \
+    connection.cpp \
+    client.cpp \
+    peermanager.cpp
+
+HEADERS  += \
+    lobbywindow.h \
+    server.h \
+    connection.h \
+    client.h \
+    peermanager.h
