@@ -4,12 +4,18 @@
 #include <QWidget>
 
 class QGridLayout;
+class QHBoxLayout;
+class ChatLog;
 
 class ConnectFour : public QWidget
 {
     Q_OBJECT
+public:
+    ConnectFour(QWidget *parent = 0);
+    ~ConnectFour();
 
-    QGridLayout * grid_layout;          // visual grid
+    QHBoxLayout *box_layout;
+    QGridLayout *grid_layout;          // visual grid
 
     enum color_t { RED, BLACK, NONE };
     color_t** space_grid;               // data representation of grid
@@ -28,9 +34,10 @@ class ConnectFour : public QWidget
 public slots:
     void column_button_pressed();
 
-public:
-    ConnectFour(QWidget *parent = 0);
-    ~ConnectFour();
+private:
+    void initializeGrid();
+
+    ChatLog *chat;
 };
 
 #endif // CONNECTFOUR_H

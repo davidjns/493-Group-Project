@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +14,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        connectfour.cpp
+        connectfour.cpp \
+    chatlog.cpp \
+    server.cpp
 
-HEADERS  += connectfour.h
+HEADERS  += connectfour.h \
+    chatlog.h \
+    server.h

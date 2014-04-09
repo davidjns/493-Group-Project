@@ -1,15 +1,37 @@
 #include "connectfour.h"
+#include "chatlog.h"
 
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
 #include <QMessageBox>
+#include <QHBoxLayout>
 
 const int NUM_ROWS = 6;
 const int NUM_COLS = 7;
 
 ConnectFour::ConnectFour(QWidget *parent)
     : QWidget(parent), player_turn(RED), turn_number(1)
+{
+    box_layout = new QHBoxLayout(this);
+
+    initializeGrid();
+
+    chat = new ChatLog();
+    box_layout->addWidget(chat);
+
+
+}
+
+ConnectFour::~ConnectFour()
+{
+    // deallocate memory for data grid
+    for(int i = 0; i < NUM_ROWS; i++)
+        delete space_grid[i];
+    delete space_grid;
+}
+
+void ConnectFour::initializeGrid()
 {
     // create grid of data, fill with empty cells
     space_grid = new color_t*[NUM_ROWS];
@@ -20,7 +42,7 @@ ConnectFour::ConnectFour(QWidget *parent)
     }
 
     // create visual grid, leave blank for now
-    grid_layout = new QGridLayout(this);
+    grid_layout = new QGridLayout();
     grid_layout->setHorizontalSpacing(0);
     grid_layout->setVerticalSpacing(0);
     this->setLayout(grid_layout);
@@ -37,14 +59,10 @@ ConnectFour::ConnectFour(QWidget *parent)
             grid_layout->addWidget(label, i, j);
         }
     }
-}
 
-ConnectFour::~ConnectFour()
-{
-    // deallocate memory for data grid
-    for(int i = 0; i < NUM_ROWS; i++)
-        delete space_grid[i];
-    delete space_grid;
+    QWidget *grid_widget = new QWidget();
+    grid_widget->setLayout(grid_layout);
+    box_layout->addWidget(grid_widget);
 }
 
 void ConnectFour::announce_winner(color_t winner) {
