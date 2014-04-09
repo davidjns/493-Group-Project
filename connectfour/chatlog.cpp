@@ -107,7 +107,12 @@ void ChatLog::on_joinButton_clicked()
         qDebug() << "connected to port 4200";
     }
     else
-        qDebug() << "failed to connect";
+    {
+        socketIn->connectToHost(QHostAddress::LocalHost, 4200);
+        connected();
+
+//        qDebug() << "failed to connect";
+    }
 }
 
 void ChatLog::on_sayButton_clicked()
