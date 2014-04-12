@@ -4,6 +4,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QImage>
 #include <QMessageBox>
 #include <QHBoxLayout>
 
@@ -51,10 +52,13 @@ void ConnectFour::initializeGrid()
         connect(button, SIGNAL(clicked()), this, SLOT(column_button_pressed()));
         grid_layout->addWidget(button, 0, i);
     }
+    QImage empty_cell(":/empty_square.png");
+    if(empty_cell.isNull())
+        exit(0);
     for(int i = 1; i <= NUM_ROWS; i++) {
         for(int j = 0; j < NUM_COLS; j++) {
             QLabel * label = new QLabel(this);
-            label->setStyleSheet("border: 2px solid yellow");
+            label->setPixmap(QPixmap::fromImage(empty_cell));
             label->setFixedSize(QSize(100,100));
             grid_layout->addWidget(label, i, j);
         }
@@ -200,10 +204,13 @@ void ConnectFour::column_button_pressed() {
     for(int i = NUM_ROWS - 1; i >= 0; i--) {
         if(space_grid[i][column_number] == NONE) {
             space_grid[i][column_number] = player_turn;
-            if(player_turn == RED)
-                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setStyleSheet("background: red");
-            else
-                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setStyleSheet("background: black");
+            if(player_turn == RED) {
+                QImage red_square(":/red_square.png");
+                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setPixmap(QPixmap::fromImage(red_square));
+            } else {
+                QImage black_square(":black_square.png");
+                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setPixmap(QPixmap::fromImage(black_square));
+            }
             check_for_win();
             increment_turn();
             return;
