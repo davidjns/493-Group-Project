@@ -21,3 +21,6 @@ SOURCES += main.cpp\
 HEADERS  += connectfour.h \
     chatlog.h \
     server.h
+
+RESOURCES += \
+    resources.qrc
