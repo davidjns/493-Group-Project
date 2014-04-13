@@ -32,7 +32,7 @@ public:
     void announce_winner(color_t);
 
 public slots:
-    void column_button_pressed();
+    void square_clicked(int);
 
 private:
     void initializeGrid();

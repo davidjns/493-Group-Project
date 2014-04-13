@@ -1,5 +1,6 @@
 #include "connectfour.h"
 #include "chatlog.h"
+#include "connectfoursquare.h"
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -47,17 +48,11 @@ void ConnectFour::initializeGrid()
     grid_layout->setHorizontalSpacing(0);
     grid_layout->setVerticalSpacing(0);
     this->setLayout(grid_layout);
-    for(int i = 0; i < NUM_COLS; i++) {
-        QPushButton * button = new QPushButton(tr("Column %1").arg(i + 1), this);
-        connect(button, SIGNAL(clicked()), this, SLOT(column_button_pressed()));
-        grid_layout->addWidget(button, 0, i);
-    }
     QImage empty_cell(":/empty_square.png");
-    if(empty_cell.isNull())
-        exit(0);
-    for(int i = 1; i <= NUM_ROWS; i++) {
+    for(int i = 0; i < NUM_ROWS; i++) {
         for(int j = 0; j < NUM_COLS; j++) {
-            QLabel * label = new QLabel(this);
+            ConnectFourSquare * label = new ConnectFourSquare(j, this);
+            connect(label, SIGNAL(clicked(int)), this, SLOT(square_clicked(int)));
             label->setPixmap(QPixmap::fromImage(empty_cell));
             label->setFixedSize(QSize(100,100));
             grid_layout->addWidget(label, i, j);
@@ -198,23 +193,21 @@ void ConnectFour::increment_turn() {
     }
 }
 
-void ConnectFour::column_button_pressed() {
-    QString button_name = ((QPushButton *)sender())->text();
-    int column_number = button_name[7].digitValue() - 1;
+void ConnectFour::square_clicked(int column_number) {
     for(int i = NUM_ROWS - 1; i >= 0; i--) {
         if(space_grid[i][column_number] == NONE) {
             space_grid[i][column_number] = player_turn;
             if(player_turn == RED) {
                 QImage red_square(":/red_square.png");
-                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setPixmap(QPixmap::fromImage(red_square));
+                ((ConnectFourSquare *)grid_layout->itemAtPosition(i,column_number)->widget())->setPixmap(QPixmap::fromImage(red_square));
             } else {
-                QImage black_square(":black_square.png");
-                ((QLabel *)grid_layout->itemAtPosition(i+1,column_number)->widget())->setPixmap(QPixmap::fromImage(black_square));
+                QImage black_square(":/black_square.png");
+                ((ConnectFourSquare *)grid_layout->itemAtPosition(i,column_number)->widget())->setPixmap(QPixmap::fromImage(black_square));
             }
             check_for_win();
             increment_turn();
             return;
         }
     }
-    // if it makes it here, invalid move
+    // If it makes it here, invalid move
 }
