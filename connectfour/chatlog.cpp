@@ -175,7 +175,7 @@ void ChatLog::on_joinButton_clicked()
 
 void ChatLog::on_sayButton_clicked()
 {
-    QString message = "(" + (QTime::currentTime()).toString() + ") " + userName + ": " + sayLineEdit->text().trimmed() + "\r\n";
+    QString message = "C(" + (QTime::currentTime()).toString() + ") " + userName + ": " + sayLineEdit->text().trimmed() + "\r\n";
     sendMessage(message);
 
     sayLineEdit->clear();
@@ -208,8 +208,26 @@ void ChatLog::processPendingDatagrams()
         }
 
         //THIS IS WHEN WE HAVE THE DATAGRAM, PARSE IT ACCORDINGLY
-        roomTextEdit->append(datagram.data());
         qDebug() << "Recieved datagram" << datagram.data();
+        QString message = datagram.data();
+        if(!message.isEmpty())
+        {
+            QChar messageType = message.at(0);
+            message.remove(0, 1);
+
+            if(messageType == QChar('C'))
+            {
+                roomTextEdit->append(message);
+            }
+            else if(messageType == QChar('G'))
+            {
+
+            }
+            else if(messageType == QChar('P'))
+            {
+                roomTextEdit->append(message);
+            }
+        }
     }
 }
 
@@ -221,7 +239,7 @@ void ChatLog::connected()
 
     userName = userLineEdit->text();
 
-    sendMessage(QString(userLineEdit->text() + " has connected!\n"));
+    sendMessage("P" + QString(userLineEdit->text() + " has connected!\n"));
 }
 
 void ChatLog::changePage()
