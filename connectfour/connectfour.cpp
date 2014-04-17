@@ -12,15 +12,13 @@
 
 const int NUM_ROWS = 6;
 const int NUM_COLS = 7;
-const char * const MOVE_QUALIFIER = "05171992";
 
 ConnectFour::ConnectFour(QWidget *parent)
-    : QWidget(parent), player_turn(RED), my_color(NONE), turn_number(1)
+    : QWidget(parent), player_turn(RED), my_color(NONE), turn_number(1), made_a_move(false)
 {
     box_layout = new QHBoxLayout(this);
     initializeGrid();
     chat = new ChatLog();
-    //connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
     connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
     connect(chat, SIGNAL(player_joined()), this, SLOT(start_game()));
     connect(chat, SIGNAL(move_recieved(int)), this, SLOT(apply_move(int)));
@@ -209,31 +207,23 @@ void ConnectFour::increment_turn() {
 void ConnectFour::square_clicked(int column_number) {
     if(player_turn == my_color)
         if(place_token(column_number)) {
-            chat->sendMessage("M" + column_number);
+            made_a_move = true;
+            QString message = tr("M%1").arg(column_number);
+            chat->sendMessage(message);
+            increment_turn();
         }
 }
 
 void ConnectFour::apply_move(int col)
 {
+    qDebug() << "Move recieved in col " << col;
+    if(made_a_move) {
+        made_a_move = false;
+        return;
+    }
     if(player_turn != my_color) {
         place_token(col);
-        qDebug() << "Move recieved in col " << col;
-    }
-}
-
-void ConnectFour::processPendingDatagrams() {
-    while(chat->socketIn->hasPendingDatagrams()) {
-        qDebug() << "processing datagrams";
-        QByteArray datagram;
-        datagram.resize(chat->socketIn->pendingDatagramSize());
-        chat->socketIn->readDatagram(datagram.data(), datagram.size());
-        if(!datagram.contains(MOVE_QUALIFIER)) {
-            qDebug() << "datagram is a chat message";
-            return;
-        }
-        int column_number = 0; /* CHANGE THIS */
-        place_token(column_number);
-        qDebug() << "Recieved datagram" << datagram.data();
+        increment_turn();
     }
 }
 
@@ -250,7 +240,6 @@ bool ConnectFour::place_token(int column_number) {
                 ((ConnectFourSquare *)grid_layout->itemAtPosition(i,column_number)->widget())->setPixmap(QPixmap::fromImage(black_square));
             }
             check_for_win();
-            increment_turn();
             return true;
         }
     }

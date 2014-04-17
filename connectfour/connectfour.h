@@ -24,6 +24,7 @@ private:
     enum color_t { RED, BLACK, NONE };
     color_t** space_grid;               // data representation of grid
     color_t player_turn;                // red or black, who's turn it is
+    bool made_a_move;
     color_t my_color;                   // red or black, this instance's color
     int turn_number;
 
@@ -43,7 +44,6 @@ signals:
 
 public slots:
     void square_clicked(int);
-    void processPendingDatagrams();
     void start_game();
     void host_game();
     void apply_move(int);

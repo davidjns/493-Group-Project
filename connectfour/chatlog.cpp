@@ -15,8 +15,6 @@
 #include <QHBoxLayout>
 #include <QDialog>
 
-const char * const MOVE_QUALIFIER = "05171992";
-
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
@@ -169,7 +167,7 @@ void ChatLog::on_joinButton_clicked()
         socketIn->connectToHost(hostAddress, portNumber);
         connected();
 
-//        qDebug() << "failed to connect";
+        qDebug() << "failed to connect";
     }
 
     emit player_joined();
@@ -204,10 +202,6 @@ void ChatLog::processPendingDatagrams()
         QByteArray datagram;
         datagram.resize(socketIn->pendingDatagramSize());
         socketIn->readDatagram(datagram.data(), datagram.size());
-        if(datagram.contains(MOVE_QUALIFIER)) {
-            qDebug() << "datagram is a move";
-            return;
-        }
 
         //THIS IS WHEN WE HAVE THE DATAGRAM, PARSE IT ACCORDINGLY
         qDebug() << "Recieved datagram" << datagram.data();
