@@ -65,6 +65,8 @@ private:
     QString serverName;
     QString userName;
 
+    bool host;
+
     void initializeLoginPage();
     void initializeChatPage();
 

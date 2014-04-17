@@ -19,6 +19,7 @@ const char * const MOVE_QUALIFIER = "05171992";
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
+    host = false;
     this->setMinimumSize(300, 200);
 
     stackedWidget = new QStackedWidget(this);
@@ -97,6 +98,7 @@ void ChatLog::initializeChatPage()
 
 void ChatLog::on_hostButton_clicked()
 {
+    qDebug() << "here";
     Server *server = new Server();
 
     QTcpSocket s;
@@ -117,6 +119,7 @@ void ChatLog::on_hostButton_clicked()
     else
     {
         qDebug() << "Server Ready";
+        host = true;
         on_joinButton_clicked();
     }
 
@@ -124,7 +127,7 @@ void ChatLog::on_hostButton_clicked()
 
     QDialog *dialog = new QDialog();
     QVBoxLayout *layout = new QVBoxLayout();
-    QLabel *label = new QLabel("You have connected to server: " + hostAddress.toString());
+    QLabel *label = new QLabel("You have connected to server: " + s.localAddress().toString());
     layout->addWidget(label);
     dialog->setLayout(layout);
     dialog->show();
@@ -133,6 +136,9 @@ void ChatLog::on_hostButton_clicked()
 void ChatLog::on_joinButton_clicked()
 {
     serverName = serverLineEdit->text();
+    if(!host)
+        hostAddress = QHostAddress(serverName);
+
     if(socketIn->bind(hostAddress, 4200))
     {
         connected();
