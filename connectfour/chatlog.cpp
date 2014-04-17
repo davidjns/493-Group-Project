@@ -113,7 +113,6 @@ void ChatLog::on_hostButton_clicked()
 
     bool success = server->listen(hostAddress, 4200);
     if(!success)
-<<<<<<< HEAD
         qDebug("Could not listen to port 4200");
     else
     {
@@ -121,11 +120,7 @@ void ChatLog::on_hostButton_clicked()
         on_joinButton_clicked();
     }
 
-=======
-        qFatal("Could not listen to port 4200");
-    qDebug() << "Server Ready";
     emit became_host();
->>>>>>> c9b012c2e8f63a96f91d6dd2ba3ce7b00d12d1a5
 
     QDialog *dialog = new QDialog();
     QVBoxLayout *layout = new QVBoxLayout();

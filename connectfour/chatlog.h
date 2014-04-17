@@ -26,9 +26,6 @@ public:
     QUdpSocket *socketIn;
     QUdpSocket *socketOut;
 
-    QUdpSocket *socketIn;
-    QUdpSocket *socketOut;
-
 signals:
     void became_host();
 
