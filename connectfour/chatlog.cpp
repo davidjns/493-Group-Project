@@ -221,9 +221,9 @@ void ChatLog::processPendingDatagrams()
             {
                 roomTextEdit->append(message);
             }
-            else if(messageType == QChar('G'))
+            else if(messageType == QChar('M'))
             {
-
+                emit move_recieved(message.toInt());
             }
             else if(messageType == QChar('P'))
             {

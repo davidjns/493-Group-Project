@@ -31,6 +31,7 @@ public:
 signals:
     void became_host();
     void player_joined();
+    void move_recieved(int);
 
 private slots:
     void on_hostButton_clicked();

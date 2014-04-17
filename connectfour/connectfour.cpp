@@ -20,9 +20,10 @@ ConnectFour::ConnectFour(QWidget *parent)
     box_layout = new QHBoxLayout(this);
     initializeGrid();
     chat = new ChatLog();
-    connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
+    //connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
     connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
     connect(chat, SIGNAL(player_joined()), this, SLOT(start_game()));
+    connect(chat, SIGNAL(move_recieved(int)), this, SLOT(apply_move(int)));
     box_layout->addWidget(chat);
 }
 
@@ -208,11 +209,16 @@ void ConnectFour::increment_turn() {
 void ConnectFour::square_clicked(int column_number) {
     if(player_turn == my_color)
         if(place_token(column_number)) {
-            qDebug() << "broadcasting datagram";
-            QByteArray datagram;
-            datagram.append(MOVE_QUALIFIER + column_number);
-            chat->socketOut->writeDatagram(datagram.data(), datagram.size(), QHostAddress::LocalHost, 4200);
+            chat->sendMessage("M" + column_number);
         }
+}
+
+void ConnectFour::apply_move(int col)
+{
+    if(player_turn != my_color) {
+        place_token(col);
+        qDebug() << "Move recieved in col " << col;
+    }
 }
 
 void ConnectFour::processPendingDatagrams() {

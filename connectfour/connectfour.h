@@ -46,6 +46,7 @@ public slots:
     void processPendingDatagrams();
     void start_game();
     void host_game();
+    void apply_move(int);
 
 };
 
