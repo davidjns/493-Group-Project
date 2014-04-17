@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QUdpSocket>
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <QHBoxLayout>
 #include <QDialog>
 
@@ -99,7 +100,10 @@ void ChatLog::initializeChatPage()
 void ChatLog::on_hostButton_clicked()
 {
     qDebug() << "here";
-    Server *server = new Server();
+//    Server *server = new Server();
+//    Server *server2 = new Server();
+    QTcpServer *server = new QTcpServer();
+    QTcpServer *server2 = new QTcpServer();
 
     QTcpSocket s;
     s.connectToHost("8.8.8.8", 53);
@@ -111,16 +115,30 @@ void ChatLog::on_hostButton_clicked()
     else
         qDebug() << "could not retrieve a host address.";
 
-    portNumber = portLineEdit->text().toInt();
+//    portNumber = portLineEdit->text().toInt();
+    portNumber = 4200;
 
-    bool success = server->listen(hostAddress, 4200);
-    if(!success)
+    bool success = server->listen(hostAddress, portNumber);
+    bool success2 = server2->listen(hostAddress, portNumber+1);
+    if(!success || !success2)
         qDebug("Could not listen to port 4200");
     else
     {
         qDebug() << "Server Ready";
         host = true;
-        on_joinButton_clicked();
+
+        if(socketIn->bind(hostAddress, portNumber))
+        {
+            connected();
+            qDebug() << "connected to port 4200";
+        }
+        else
+        {
+            //socketIn->connectToHost(hostAddress, portNumber);
+            //connected();
+
+            qDebug() << "failed to connect";
+        }
     }
 
     emit became_host();
@@ -136,17 +154,19 @@ void ChatLog::on_hostButton_clicked()
 void ChatLog::on_joinButton_clicked()
 {
     serverName = serverLineEdit->text();
-    if(!host)
-        hostAddress = QHostAddress(serverName);
 
-    if(socketIn->bind(hostAddress, 4200))
+    hostAddress = QHostAddress(serverName);
+    portNumber = 4200;
+    //portNumber = portLineEdit->text().toInt();
+
+    if(socketIn->bind(hostAddress, portNumber+1))
     {
         connected();
         qDebug() << "connected to port 4200";
     }
     else
     {
-        socketIn->connectToHost(hostAddress, 4200);
+        socketIn->connectToHost(hostAddress, portNumber);
         connected();
 
 //        qDebug() << "failed to connect";
@@ -155,18 +175,23 @@ void ChatLog::on_joinButton_clicked()
 
 void ChatLog::on_sayButton_clicked()
 {
-    QString message = sayLineEdit->text().trimmed() + "\r\n";
+    QString message = "(" + (QTime::currentTime()).toString() + ") " + userName + ": " + sayLineEdit->text().trimmed() + "\r\n";
+    sendMessage(message);
 
+    sayLineEdit->clear();
+    sayLineEdit->setFocus();
+}
+
+void ChatLog::sendMessage(QString message)
+{
     if(!message.isEmpty())
     {
         qDebug() << "broadcasting datagram";
         QByteArray datagram;
-        datagram.append("(" + (QTime::currentTime()).toString() + ") " + userName + ": " + message);
-        socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, 4200);
+        datagram.append(message);
+        socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, portNumber);
+        socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, portNumber+1);
     }
-
-    sayLineEdit->clear();
-    sayLineEdit->setFocus();
 }
 
 void ChatLog::processPendingDatagrams()
@@ -181,6 +206,8 @@ void ChatLog::processPendingDatagrams()
             qDebug() << "datagram is a move";
             return;
         }
+
+        //THIS IS WHEN WE HAVE THE DATAGRAM, PARSE IT ACCORDINGLY
         roomTextEdit->append(datagram.data());
         qDebug() << "Recieved datagram" << datagram.data();
     }
@@ -194,9 +221,7 @@ void ChatLog::connected()
 
     userName = userLineEdit->text();
 
-    QByteArray datagram;
-    datagram.append(QString(userLineEdit->text() + " has connected!\n"));
-    socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, 4200);
+    sendMessage(QString(userLineEdit->text() + " has connected!\n"));
 }
 
 void ChatLog::changePage()

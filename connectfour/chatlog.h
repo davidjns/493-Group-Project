@@ -26,6 +26,8 @@ public:
     QUdpSocket *socketIn;
     QUdpSocket *socketOut;
 
+    void sendMessage(QString message);
+
 signals:
     void became_host();
 
