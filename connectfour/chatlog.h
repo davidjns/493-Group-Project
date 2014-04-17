@@ -16,12 +16,15 @@ class QUdpSocket;
 class MySocket;
 
 #include <QWidget>
+#include <QHostAddress>
 
 class ChatLog : public QWidget
 {
     Q_OBJECT
 public:
     ChatLog(QWidget *parent = 0);
+    QUdpSocket *socketIn;
+    QUdpSocket *socketOut;
 
 private slots:
     void on_hostButton_clicked();
@@ -36,8 +39,8 @@ private slots:
 private:
     QStackedWidget *stackedWidget;
 
-    QUdpSocket *socketIn;
-    QUdpSocket *socketOut;
+    QHostAddress hostAddress;
+    quint16 portNumber;
 
     QWidget *loginPage;
     QFrame *loginFrame;
@@ -45,6 +48,7 @@ private:
     QPushButton *hostButton;
     QPushButton *joinButton;
     QLineEdit *serverLineEdit;
+    QLineEdit *portLineEdit;
     QLineEdit *userLineEdit;
 
     QWidget *chatPage;

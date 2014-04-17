@@ -10,7 +10,9 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QUdpSocket>
+#include <QTcpSocket>
 #include <QHBoxLayout>
+#include <QDialog>
 
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
@@ -46,17 +48,21 @@ void ChatLog::initializeLoginPage()
     connect(joinButton, SIGNAL(clicked()), this, SLOT(on_joinButton_clicked()));
 
     serverLineEdit = new QLineEdit();
+    portLineEdit = new QLineEdit();
     userLineEdit = new QLineEdit();
 
-    QLabel *label1 = new QLabel("Server Name: ");
-    QLabel *label2 = new QLabel("User Name: ");
+    QLabel *label1 = new QLabel("User Name: ");
+    QLabel *label2 = new QLabel("Server Name: ");
+    QLabel *label3 = new QLabel("Port Number: ");
 
     loginLayout->addWidget(label1, 1, 1);
-    loginLayout->addWidget(serverLineEdit, 1, 2);
+    loginLayout->addWidget(userLineEdit, 1, 2);
     loginLayout->addWidget(label2, 2, 1);
-    loginLayout->addWidget(userLineEdit, 2, 2);
-    loginLayout->addWidget(joinButton, 3, 2);
-    loginLayout->addWidget(hostButton, 4, 2);
+    loginLayout->addWidget(serverLineEdit, 2, 2);
+    loginLayout->addWidget(label3, 3, 1);
+    loginLayout->addWidget(portLineEdit, 3, 2);
+    loginLayout->addWidget(joinButton, 4, 2);
+    loginLayout->addWidget(hostButton, 5, 2);
 }
 
 void ChatLog::initializeChatPage()
@@ -90,25 +96,48 @@ void ChatLog::initializeChatPage()
 void ChatLog::on_hostButton_clicked()
 {
     Server *server = new Server();
-    bool success = server->listen(QHostAddress::LocalHost, 4200);
-    if(!success)
-        qFatal("Could not listen to port 4200");
-    qDebug() << "Server Ready";
 
-    on_joinButton_clicked();
+    QTcpSocket s;
+    s.connectToHost("8.8.8.8", 53);
+    if(s.waitForConnected())
+    {
+        hostAddress = s.localAddress();
+        qDebug() << "my local address is: " << s.localAddress();
+    }
+    else
+        qDebug() << "could not retrieve a host address.";
+
+    portNumber = portLineEdit->text().toInt();
+
+    bool success = server->listen(hostAddress, 4200);
+    if(!success)
+        qDebug("Could not listen to port 4200");
+    else
+    {
+        qDebug() << "Server Ready";
+        on_joinButton_clicked();
+    }
+
+
+    QDialog *dialog = new QDialog();
+    QVBoxLayout *layout = new QVBoxLayout();
+    QLabel *label = new QLabel("You have connected to server: " + hostAddress.toString());
+    layout->addWidget(label);
+    dialog->setLayout(layout);
+    dialog->show();
 }
 
 void ChatLog::on_joinButton_clicked()
 {
     serverName = serverLineEdit->text();
-    if(socketIn->bind(QHostAddress::LocalHost, 4200))
+    if(socketIn->bind(hostAddress, 4200))
     {
         connected();
         qDebug() << "connected to port 4200";
     }
     else
     {
-        socketIn->connectToHost(QHostAddress::LocalHost, 4200);
+        socketIn->connectToHost(hostAddress, 4200);
         connected();
 
 //        qDebug() << "failed to connect";
@@ -124,7 +153,7 @@ void ChatLog::on_sayButton_clicked()
         qDebug() << "broadcasting datagram";
         QByteArray datagram;
         datagram.append("(" + (QTime::currentTime()).toString() + ") " + userName + ": " + message);
-        socketOut->writeDatagram(datagram.data(), datagram.size(), QHostAddress::LocalHost, 4200);
+        socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, 4200);
     }
 
     sayLineEdit->clear();
@@ -154,7 +183,7 @@ void ChatLog::connected()
 
     QByteArray datagram;
     datagram.append(QString(userLineEdit->text() + " has connected!\n"));
-    socketOut->writeDatagram(datagram.data(), datagram.size(), QHostAddress::LocalHost, 4200);
+    socketOut->writeDatagram(datagram.data(), datagram.size(), hostAddress, 4200);
 }
 
 void ChatLog::changePage()
