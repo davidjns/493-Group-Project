@@ -18,14 +18,12 @@ ConnectFour::ConnectFour(QWidget *parent)
     : QWidget(parent), player_turn(RED), my_color(BLACK), turn_number(1)
 {
     box_layout = new QHBoxLayout(this);
-
     initializeGrid();
-
     chat = new ChatLog();
     connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
     connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
+    connect(chat, SIGNAL(second_player_joined()), this, SLOT(start_game()));
     box_layout->addWidget(chat);
-
 }
 
 ConnectFour::~ConnectFour()
@@ -47,10 +45,10 @@ void ConnectFour::initializeGrid()
     }
 
     // create visual grid, leave blank for now
-    grid_layout = new QGridLayout();
+    QWidget *grid_widget = new QWidget();
+    grid_layout = new QGridLayout(grid_widget);
     grid_layout->setHorizontalSpacing(0);
     grid_layout->setVerticalSpacing(0);
-    this->setLayout(grid_layout);
     QImage empty_cell(":/empty_square.png");
     for(int i = 0; i < NUM_ROWS; i++) {
         for(int j = 0; j < NUM_COLS; j++) {
@@ -62,9 +60,13 @@ void ConnectFour::initializeGrid()
         }
     }
 
-    QWidget *grid_widget = new QWidget();
     grid_widget->setLayout(grid_layout);
+    grid_widget->hide();
     box_layout->addWidget(grid_widget);
+}
+
+void ConnectFour::start_game() {
+    ((QWidget *)box_layout->itemAt(0))->show();
 }
 
 void ConnectFour::host_game() {
@@ -78,6 +80,7 @@ void ConnectFour::announce_winner(color_t winner) {
     else
         message->setText("Black Player Wins!");
     message->exec();
+    emit game_over();
 }
 
 // Checks if any player has won the game
