@@ -8,20 +8,23 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QHBoxLayout>
+#include <QUdpSocket>
 
 const int NUM_ROWS = 6;
 const int NUM_COLS = 7;
+const char * const MOVE_QUALIFIER = "05171992";
 
 ConnectFour::ConnectFour(QWidget *parent)
-    : QWidget(parent), player_turn(RED), turn_number(1)
+    : QWidget(parent), player_turn(RED), my_color(BLACK), turn_number(1)
 {
     box_layout = new QHBoxLayout(this);
 
     initializeGrid();
 
     chat = new ChatLog();
+    connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
+    connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
     box_layout->addWidget(chat);
-
 
 }
 
@@ -62,6 +65,10 @@ void ConnectFour::initializeGrid()
     QWidget *grid_widget = new QWidget();
     grid_widget->setLayout(grid_layout);
     box_layout->addWidget(grid_widget);
+}
+
+void ConnectFour::host_game() {
+    my_color = RED;
 }
 
 void ConnectFour::announce_winner(color_t winner) {
@@ -194,6 +201,33 @@ void ConnectFour::increment_turn() {
 }
 
 void ConnectFour::square_clicked(int column_number) {
+    if(player_turn == my_color)
+        if(place_token(column_number)) {
+            qDebug() << "broadcasting datagram";
+            QByteArray datagram;
+            datagram.append(MOVE_QUALIFIER + column_number);
+            chat->socketOut->writeDatagram(datagram.data(), datagram.size(), QHostAddress::LocalHost, 4200);
+        }
+}
+
+void ConnectFour::processPendingDatagrams() {
+    while(chat->socketIn->hasPendingDatagrams()) {
+        qDebug() << "processing datagrams";
+        QByteArray datagram;
+        datagram.resize(chat->socketIn->pendingDatagramSize());
+        chat->socketIn->readDatagram(datagram.data(), datagram.size());
+        if(!datagram.contains(MOVE_QUALIFIER)) {
+            qDebug() << "datagram is a chat message";
+            return;
+        }
+        int column_number = 0; /* CHANGE THIS */
+        place_token(column_number);
+        qDebug() << "Recieved datagram" << datagram.data();
+    }
+}
+
+// Returns true if a token was played
+bool ConnectFour::place_token(int column_number) {
     for(int i = NUM_ROWS - 1; i >= 0; i--) {
         if(space_grid[i][column_number] == NONE) {
             space_grid[i][column_number] = player_turn;
@@ -206,8 +240,8 @@ void ConnectFour::square_clicked(int column_number) {
             }
             check_for_win();
             increment_turn();
-            return;
+            return true;
         }
     }
-    // If it makes it here, invalid move
+    return false;
 }

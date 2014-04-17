@@ -26,6 +26,12 @@ public:
     QUdpSocket *socketIn;
     QUdpSocket *socketOut;
 
+    QUdpSocket *socketIn;
+    QUdpSocket *socketOut;
+
+signals:
+    void became_host();
+
 private slots:
     void on_hostButton_clicked();
     void on_joinButton_clicked();
