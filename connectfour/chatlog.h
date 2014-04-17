@@ -23,6 +23,12 @@ class ChatLog : public QWidget
 public:
     ChatLog(QWidget *parent = 0);
 
+    QUdpSocket *socketIn;
+    QUdpSocket *socketOut;
+
+signals:
+    void became_host();
+
 private slots:
     void on_hostButton_clicked();
     void on_joinButton_clicked();
@@ -35,9 +41,6 @@ private slots:
 
 private:
     QStackedWidget *stackedWidget;
-
-    QUdpSocket *socketIn;
-    QUdpSocket *socketOut;
 
     QWidget *loginPage;
     QFrame *loginFrame;

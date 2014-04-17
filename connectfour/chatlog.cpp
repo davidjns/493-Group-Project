@@ -12,6 +12,8 @@
 #include <QUdpSocket>
 #include <QHBoxLayout>
 
+const char * const MOVE_QUALIFIER = "05171992";
+
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
@@ -94,6 +96,7 @@ void ChatLog::on_hostButton_clicked()
     if(!success)
         qFatal("Could not listen to port 4200");
     qDebug() << "Server Ready";
+    emit became_host();
 
     on_joinButton_clicked();
 }
@@ -139,6 +142,10 @@ void ChatLog::processPendingDatagrams()
         QByteArray datagram;
         datagram.resize(socketIn->pendingDatagramSize());
         socketIn->readDatagram(datagram.data(), datagram.size());
+        if(datagram.contains(MOVE_QUALIFIER)) {
+            qDebug() << "datagram is a move";
+            return;
+        }
         roomTextEdit->append(datagram.data());
         qDebug() << "Recieved datagram" << datagram.data();
     }

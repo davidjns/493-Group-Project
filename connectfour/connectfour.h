@@ -14,16 +14,18 @@ public:
     ConnectFour(QWidget *parent = 0);
     ~ConnectFour();
 
+private:
     QHBoxLayout *box_layout;
     QGridLayout *grid_layout;          // visual grid
 
     enum color_t { RED, BLACK, NONE };
     color_t** space_grid;               // data representation of grid
     color_t player_turn;                // red or black, who's turn it is
+    color_t my_color;                   // red or black, this instance's color
     int turn_number;
 
+    void initializeGrid();
     void increment_turn();
-
     void check_for_win();
     color_t check_horizontal_win();
     color_t check_vertical_win();
@@ -31,13 +33,15 @@ public:
     color_t check_diagonal_up_right_win();
     void announce_winner(color_t);
 
-public slots:
-    void square_clicked(int);
-
-private:
-    void initializeGrid();
+    bool place_token(int column_number);
 
     ChatLog *chat;
+
+public slots:
+    void square_clicked(int);
+    void processPendingDatagrams();
+    void host_game();
+
 };
 
 #endif // CONNECTFOUR_H
