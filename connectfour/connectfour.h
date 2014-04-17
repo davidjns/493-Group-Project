@@ -14,8 +14,11 @@ public:
     ConnectFour(QWidget *parent = 0);
     ~ConnectFour();
 
+    ChatLog *chat;
+
 private:
     QHBoxLayout *box_layout;
+    QWidget *grid_widget;
     QGridLayout *grid_layout;          // visual grid
 
     enum color_t { RED, BLACK, NONE };
@@ -35,11 +38,13 @@ private:
 
     bool place_token(int column_number);
 
-    ChatLog *chat;
+signals:
+    void game_over();
 
 public slots:
     void square_clicked(int);
     void processPendingDatagrams();
+    void start_game();
     void host_game();
 
 };

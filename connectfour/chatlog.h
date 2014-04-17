@@ -30,6 +30,7 @@ public:
 
 signals:
     void became_host();
+    void player_joined();
 
 private slots:
     void on_hostButton_clicked();
