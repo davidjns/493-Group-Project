@@ -15,14 +15,14 @@ const int NUM_COLS = 7;
 const char * const MOVE_QUALIFIER = "05171992";
 
 ConnectFour::ConnectFour(QWidget *parent)
-    : QWidget(parent), player_turn(RED), my_color(BLACK), turn_number(1)
+    : QWidget(parent), player_turn(RED), my_color(NONE), turn_number(1)
 {
     box_layout = new QHBoxLayout(this);
     initializeGrid();
     chat = new ChatLog();
     connect(chat->socketIn, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
     connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
-    connect(chat, SIGNAL(second_player_joined()), this, SLOT(start_game()));
+    connect(chat, SIGNAL(player_joined()), this, SLOT(start_game()));
     box_layout->addWidget(chat);
 }
 
@@ -45,7 +45,7 @@ void ConnectFour::initializeGrid()
     }
 
     // create visual grid, leave blank for now
-    QWidget *grid_widget = new QWidget();
+    grid_widget = new QWidget();
     grid_layout = new QGridLayout(grid_widget);
     grid_layout->setHorizontalSpacing(0);
     grid_layout->setVerticalSpacing(0);
@@ -66,11 +66,13 @@ void ConnectFour::initializeGrid()
 }
 
 void ConnectFour::start_game() {
-    ((QWidget *)box_layout->itemAt(0))->show();
+    my_color = BLACK;
+    grid_widget->show();
 }
 
 void ConnectFour::host_game() {
     my_color = RED;
+    grid_widget->show();
 }
 
 void ConnectFour::announce_winner(color_t winner) {

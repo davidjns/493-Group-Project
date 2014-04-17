@@ -171,6 +171,8 @@ void ChatLog::on_joinButton_clicked()
 
 //        qDebug() << "failed to connect";
     }
+
+    emit player_joined();
 }
 
 void ChatLog::on_sayButton_clicked()

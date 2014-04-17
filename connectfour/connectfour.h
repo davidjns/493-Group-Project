@@ -18,6 +18,7 @@ public:
 
 private:
     QHBoxLayout *box_layout;
+    QWidget *grid_widget;
     QGridLayout *grid_layout;          // visual grid
 
     enum color_t { RED, BLACK, NONE };
