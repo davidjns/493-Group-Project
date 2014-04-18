@@ -76,10 +76,10 @@ void ConnectFour::host_game() {
 
 void ConnectFour::announce_winner(color_t winner) {
     QMessageBox * message = new QMessageBox(this);
-    if(winner == RED)
-        message->setText("Red Player Wins!");
+    if(winner == my_color)
+        message->setText("You Win!");
     else
-        message->setText("Black Player Wins!");
+        message->setText("You Lose!");
     message->exec();
     emit game_over();
 }
@@ -210,6 +210,7 @@ void ConnectFour::square_clicked(int column_number) {
             made_a_move = true;
             QString message = tr("M%1").arg(column_number);
             chat->sendMessage(message);
+            check_for_win();
             increment_turn();
         }
 }
@@ -223,6 +224,7 @@ void ConnectFour::apply_move(int col)
     }
     if(player_turn != my_color) {
         place_token(col);
+        check_for_win();
         increment_turn();
     }
 }
@@ -239,7 +241,6 @@ bool ConnectFour::place_token(int column_number) {
                 QImage black_square(":/black_square.png");
                 ((ConnectFourSquare *)grid_layout->itemAtPosition(i,column_number)->widget())->setPixmap(QPixmap::fromImage(black_square));
             }
-            check_for_win();
             return true;
         }
     }
