@@ -160,7 +160,7 @@ void ChatLog::on_joinButton_clicked()
     if(socketIn->bind(hostAddress, portNumber+1))
     {
         connected();
-        qDebug() << "connected to port 4200";
+        qDebug() << "connected to port 4201";
     }
     else
     {
