@@ -13,6 +13,8 @@ class MainWindow : public QMainWindow
     QHBoxLayout * box_layout;
     ConnectFour * connectfour;
 
+    void initialize_game();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
 

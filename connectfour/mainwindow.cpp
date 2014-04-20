@@ -7,6 +7,14 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    initialize_game();
+}
+
+void MainWindow::game_start() {
+    resize(1000, 600);
+}
+
+void MainWindow::initialize_game() {
     resize(300,200);
     connectfour = new ConnectFour(this);
     connect(connectfour, SIGNAL(game_over()), this, SLOT(game_over()));
@@ -15,14 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(connectfour);
 }
 
-void MainWindow::game_start() {
-    resize(1000, 600);
-}
-
 void MainWindow::game_over() {
     qDebug() << "Game is over, going back to original state";
-    resize(300,200);
-    delete connectfour;
-    connectfour = new ConnectFour(this);
-    setCentralWidget(connectfour);
+    initialize_game();
 }
