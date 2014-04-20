@@ -20,7 +20,9 @@ void MainWindow::game_start() {
 }
 
 void MainWindow::game_over() {
+    qDebug() << "Game is over, going back to original state";
     resize(300,200);
     delete connectfour;
     connectfour = new ConnectFour(this);
+    setCentralWidget(connectfour);
 }

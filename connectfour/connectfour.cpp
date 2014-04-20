@@ -78,6 +78,8 @@ void ConnectFour::announce_winner(color_t winner) {
     QMessageBox * message = new QMessageBox(this);
     if(winner == my_color)
         message->setText("You Win!");
+    else if(winner == NONE)
+        message->setText("Tie Game!");
     else
         message->setText("You Lose!");
     message->exec();
@@ -202,6 +204,8 @@ void ConnectFour::increment_turn() {
         player_turn = RED;
         turn_number++;
     }
+    if(turn_number == 22) // Game has ended in a draw
+        announce_winner(NONE);
 }
 
 void ConnectFour::square_clicked(int column_number) {
