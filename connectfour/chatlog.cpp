@@ -184,6 +184,11 @@ void ChatLog::closeServers() {
 void ChatLog::on_joinButton_clicked()
 {
     serverName = serverLineEdit->text();
+    if(serverName.isEmpty())
+    {
+        displayErrorDialog();
+        return;
+    }
 
     hostAddress = QHostAddress(serverName);
     portNumber = 4200;
@@ -192,21 +197,19 @@ void ChatLog::on_joinButton_clicked()
 
     if(socketIn->bind(hostAddress, portNumber+1))
     {
+        ipLabel->setText("Server Address: " + serverName);
         connected();
         emit player_joined();
         qDebug() << "connected to port 4201";
     }
     else
     {
-        //socketIn->connectToHost(hostAddress, portNumber);
-        //connected();
         displayErrorDialog();
-        //failedLabel->show();
         serverLineEdit->clear();
         qDebug() << "failed to connect";
     }
 
-    ipLabel->setText("Server Address: " + serverName);
+
 }
 
 void ChatLog::on_sayButton_clicked()
@@ -280,9 +283,17 @@ void ChatLog::connected()
     resize(550, 275);
 
     userName = userLineEdit->text();
+    if(userName.isEmpty())
+    {
+        qDebug() << "empty username";
+        if(host)
+            userName = "Player 1";
+        else
+            userName = "Player 2";
+    }
 
-    sendMessage("C" + QString(userLineEdit->text() + " has connected!\n"));
-    sendMessage("P" + QString(userLineEdit->text()));
+    sendMessage("C" + QString(userName) + " has connected!\n");
+    sendMessage("P" + QString(userName));
 }
 
 void ChatLog::changePage()
