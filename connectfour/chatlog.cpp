@@ -126,6 +126,8 @@ void ChatLog::initializeChatPage()
 
 void ChatLog::on_hostButton_clicked()
 {
+    server = new QTcpServer();
+    server2 = new QTcpServer();
     //WinSock Stuff
 //    struct addrInfo *result = NULL, *ptr = NULL, hints;
 //    ZeroMemory(&hints, sizeof(hints));
@@ -143,8 +145,6 @@ void ChatLog::on_hostButton_clicked()
 //    }
 
     //Qt Socket Stuff
-    QTcpServer *server = new QTcpServer();
-    QTcpServer *server2 = new QTcpServer();
 
     QTcpSocket s;
     s.connectToHost("8.8.8.8", 53);
@@ -186,6 +186,11 @@ void ChatLog::on_hostButton_clicked()
 //    font.setBold(true);
 //    ipLabel->setFont(font);
     //displayAddressDialog(s.localAddress().toString());
+}
+
+void ChatLog::closeServers() {
+    server->close();
+    server2->close();
 }
 
 void ChatLog::on_joinButton_clicked()
@@ -318,4 +323,8 @@ void ChatLog::displayAddressDialog(QString address)
 //    layout->addWidget(label);
 //    dialog->setLayout(layout);
 //    dialog->show();
+}
+
+quint16 ChatLog::getNumPlayers() {
+    return numPlayers;
 }

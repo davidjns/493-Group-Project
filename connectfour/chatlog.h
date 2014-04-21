@@ -12,6 +12,7 @@ class QStackedWidget;
 class QListWidget;
 class QTextEdit;
 class QUdpSocket;
+class QTcpServer;
 
 class MySocket;
 
@@ -29,6 +30,8 @@ public:
     QLabel *turnIndicator;
 
     void sendMessage(QString message);
+    void closeServers();
+    quint16 getNumPlayers();
 
 signals:
     void became_host();
@@ -50,6 +53,8 @@ private:
 
     QHostAddress hostAddress;
     quint16 portNumber;
+    QTcpServer *server;
+    QTcpServer *server2;
     quint16 clientPortNumber;
 
     QWidget *loginPage;
