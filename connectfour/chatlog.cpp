@@ -68,10 +68,10 @@ void ChatLog::initializeLoginPage()
     loginLayout->addWidget(userLineEdit, 1, 2);
     loginLayout->addWidget(label2, 2, 1);
     loginLayout->addWidget(serverLineEdit, 2, 2);
-    loginLayout->addWidget(label3, 3, 1);
-    loginLayout->addWidget(portLineEdit, 3, 2);
-    loginLayout->addWidget(joinButton, 4, 2);
-    loginLayout->addWidget(hostButton, 5, 2);
+    //loginLayout->addWidget(label3, 3, 1);
+    //loginLayout->addWidget(portLineEdit, 3, 2);
+    loginLayout->addWidget(joinButton, 3, 2);
+    loginLayout->addWidget(hostButton, 4, 2);
 }
 
 void ChatLog::initializeChatPage()
@@ -212,6 +212,7 @@ void ChatLog::on_joinButton_clicked()
     }
 
     emit player_joined();
+    ipLabel->setText("Server Address: " + serverName);
 }
 
 void ChatLog::on_sayButton_clicked()
