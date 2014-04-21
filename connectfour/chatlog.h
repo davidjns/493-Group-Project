@@ -55,6 +55,7 @@ private:
     quint16 portNumber;
     QTcpServer *server;
     QTcpServer *server2;
+    quint16 clientPortNumber;
 
     QWidget *loginPage;
     QFrame *loginFrame;
@@ -64,6 +65,7 @@ private:
     QLineEdit *serverLineEdit;
     QLineEdit *portLineEdit;
     QLineEdit *userLineEdit;
+    QLabel *ipLabel;
 
     QWidget *chatPage;
     QFrame *chatFrame;
