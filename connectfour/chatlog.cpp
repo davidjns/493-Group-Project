@@ -13,11 +13,13 @@
 #include <QTcpServer>
 #include <QHBoxLayout>
 #include <QDialog>
+#include <QAction>
 
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
     host = false;
+    numPlayers = 0;
     this->setMinimumSize(300, 200);
 
     stackedWidget = new QStackedWidget(this);
@@ -80,8 +82,13 @@ void ChatLog::initializeChatPage()
 
     sayLineEdit = new QLineEdit();
     sayLineEdit->setFocus();
+    connect(sayLineEdit, SIGNAL(returnPressed()), this, SLOT(on_sayButton_clicked()));
     roomTextEdit = new QTextEdit();
     roomTextEdit->setReadOnly(true);
+    clientsTextEdit = new QTextEdit();
+    clientsTextEdit->setReadOnly(true);
+    clientsTextEdit->setFixedWidth(100);
+    clientsTextEdit->append("Players in Chat:");
     userListWidget = new QListWidget();
 
     QWidget *lowerChat = new QWidget();
@@ -93,15 +100,13 @@ void ChatLog::initializeChatPage()
     turnIndicator = new QLabel();
 
     chatLayout->addWidget(roomTextEdit, 1, 1);
+    chatLayout->addWidget(clientsTextEdit, 1, 2);
     chatLayout->addWidget(lowerChat, 2, 1);
     chatLayout->addWidget(turnIndicator, 3, 1);
 }
 
 void ChatLog::on_hostButton_clicked()
 {
-    qDebug() << "here";
-//    Server *server = new Server();
-//    Server *server2 = new Server();
     QTcpServer *server = new QTcpServer();
     QTcpServer *server2 = new QTcpServer();
 
@@ -117,8 +122,6 @@ void ChatLog::on_hostButton_clicked()
 
 //    portNumber = portLineEdit->text().toInt();
     portNumber = 4200;
-//    portNumber = 80;
-//    hostAddress = QHostAddress("31.170.160.74");
 
     bool success = server->listen(hostAddress, portNumber);
     bool success2 = server2->listen(hostAddress, portNumber+1);
@@ -136,21 +139,12 @@ void ChatLog::on_hostButton_clicked()
         }
         else
         {
-            //socketIn->connectToHost(hostAddress, portNumber);
-            //connected();
-
             qDebug() << "failed to connect";
         }
     }
 
     emit became_host();
-
-    QDialog *dialog = new QDialog();
-    QVBoxLayout *layout = new QVBoxLayout();
-    QLabel *label = new QLabel("You have connected to server: " + s.localAddress().toString());
-    layout->addWidget(label);
-    dialog->setLayout(layout);
-    dialog->show();
+    displayAddressDialog(s.localAddress().toString());
 }
 
 void ChatLog::on_joinButton_clicked()
@@ -179,7 +173,12 @@ void ChatLog::on_joinButton_clicked()
 
 void ChatLog::on_sayButton_clicked()
 {
-    QString message = "C(" + (QTime::currentTime()).toString() + ") " + userName + ": " + sayLineEdit->text().trimmed() + "\r\n";
+
+    QString sayLine = sayLineEdit->text().trimmed();
+    if(sayLine.isEmpty())
+        return;
+
+    QString message = "C(" + (QTime::currentTime()).toString() + ") " + userName + ": " + sayLine + "\r\n";
     sendMessage(message);
 
     sayLineEdit->clear();
@@ -226,6 +225,8 @@ void ChatLog::processPendingDatagrams()
             else if(messageType == QChar('P'))
             {
                 roomTextEdit->append(message);
+                QString playerName = message.split(" ").at(0);
+                playerConnected(playerName);
             }
         }
     }
@@ -246,4 +247,21 @@ void ChatLog::changePage()
 {
     stackedWidget->setCurrentWidget(chatPage);
     resize(550, 275);
+}
+
+void ChatLog::playerConnected(QString playerName)
+{
+    numPlayers++;
+    QString string = QString::number(numPlayers) + ". " + playerName;
+    clientsTextEdit->append(string);
+}
+
+void ChatLog::displayAddressDialog(QString address)
+{
+    QDialog *dialog = new QDialog();
+    QVBoxLayout *layout = new QVBoxLayout();
+    QLabel *label = new QLabel("You have connected to server: " + address);
+    layout->addWidget(label);
+    dialog->setLayout(layout);
+    dialog->show();
 }

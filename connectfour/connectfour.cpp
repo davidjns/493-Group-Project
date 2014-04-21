@@ -1,7 +1,6 @@
 #include "connectfour.h"
 #include "chatlog.h"
 #include "connectfoursquare.h"
-
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
