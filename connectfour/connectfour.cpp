@@ -65,6 +65,7 @@ void ConnectFour::initializeGrid()
 void ConnectFour::start_game() {
     my_color = BLACK;
     grid_widget->show();
+    grid_widget->setFixedHeight(620);
     chat->turnIndicator->setText(tr("Turn %1 Opponent's move").arg(turn_number));
     chat->turnIndicator->setStyleSheet("Color : " + colorToString(player_turn));
 }
@@ -72,6 +73,7 @@ void ConnectFour::start_game() {
 void ConnectFour::host_game() {
     my_color = RED;
     grid_widget->show();
+    grid_widget->setFixedHeight(620);
     chat->turnIndicator->setText(tr("Turn %1 Your move").arg(turn_number));
     chat->turnIndicator->setStyleSheet("Color : " + colorToString(player_turn));
 }

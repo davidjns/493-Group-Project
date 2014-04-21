@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::game_start() {
     resize(1135, 600);
+    move(10, 10);
 }
 
 void MainWindow::initialize_game() {

@@ -99,7 +99,7 @@ void ChatLog::initializeChatPage()
     clientsTextEdit = new QTextEdit();
     clientsTextEdit->setReadOnly(true);
     clientsTextEdit->setFixedWidth(100);
-    clientsTextEdit->append("Players in Chat:");
+    clientsTextEdit->append("Players in Chat:\n");
     userListWidget = new QListWidget();
 
     QWidget *lowerChat = new QWidget();
