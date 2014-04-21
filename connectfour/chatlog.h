@@ -64,6 +64,7 @@ private:
     QPushButton *sayButton;
     QLineEdit *sayLineEdit;
     QTextEdit *roomTextEdit;
+    QTextEdit *clientsTextEdit;
     QListWidget *userListWidget;
 
     QString serverName;
@@ -73,6 +74,9 @@ private:
 
     void initializeLoginPage();
     void initializeChatPage();
+
+    void playerConnected(QString playerName);
+    qint16 numPlayers;
 
 };
 

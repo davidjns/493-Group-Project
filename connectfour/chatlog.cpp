@@ -18,6 +18,7 @@ ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
     host = false;
+    numPlayers = 0;
     this->setMinimumSize(300, 200);
 
     stackedWidget = new QStackedWidget(this);
@@ -82,6 +83,10 @@ void ChatLog::initializeChatPage()
     sayLineEdit->setFocus();
     roomTextEdit = new QTextEdit();
     roomTextEdit->setReadOnly(true);
+    clientsTextEdit = new QTextEdit();
+    clientsTextEdit->setReadOnly(true);
+    clientsTextEdit->setFixedWidth(100);
+    clientsTextEdit->append("Players in Chat:");
     userListWidget = new QListWidget();
 
     QWidget *lowerChat = new QWidget();
@@ -91,6 +96,7 @@ void ChatLog::initializeChatPage()
     lowerChatLayout->addWidget(sayButton);
 
     chatLayout->addWidget(roomTextEdit, 1, 1);
+    chatLayout->addWidget(clientsTextEdit, 1, 2);
     chatLayout->addWidget(lowerChat, 2, 1);
 }
 
@@ -223,6 +229,8 @@ void ChatLog::processPendingDatagrams()
             else if(messageType == QChar('P'))
             {
                 roomTextEdit->append(message);
+                QString playerName = message.split(" ").at(0);
+                playerConnected(playerName);
             }
         }
     }
@@ -243,4 +251,11 @@ void ChatLog::changePage()
 {
     stackedWidget->setCurrentWidget(chatPage);
     resize(550, 275);
+}
+
+void ChatLog::playerConnected(QString playerName)
+{
+    numPlayers++;
+    QString string = QString::number(numPlayers) + ". " + playerName;
+    clientsTextEdit->append(string);
 }
