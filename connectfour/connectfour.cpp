@@ -18,7 +18,7 @@ ConnectFour::ConnectFour(QWidget *parent)
 {
     box_layout = new QHBoxLayout(this);
     initializeGrid();
-    chat = new ChatLog();
+    chat = new ChatLog(this);
     connect(chat, SIGNAL(became_host()), this, SLOT(host_game()));
     connect(chat, SIGNAL(player_joined()), this, SLOT(start_game()));
     connect(chat, SIGNAL(move_recieved(int)), this, SLOT(apply_move(int)));
@@ -67,11 +67,15 @@ void ConnectFour::initializeGrid()
 void ConnectFour::start_game() {
     my_color = BLACK;
     grid_widget->show();
+    chat->turnIndicator->setText(tr("Turn %1 Opponent's move").arg(turn_number));
+    chat->turnIndicator->setStyleSheet("Color : " + colorToString(player_turn));
 }
 
 void ConnectFour::host_game() {
     my_color = RED;
     grid_widget->show();
+    chat->turnIndicator->setText(tr("Turn %1 Your move").arg(turn_number));
+    chat->turnIndicator->setStyleSheet("Color : " + colorToString(player_turn));
 }
 
 void ConnectFour::announce_winner(color_t winner) {
@@ -197,6 +201,17 @@ ConnectFour::color_t ConnectFour::check_diagonal_up_right_win() {
     return NONE;
 }
 
+const QString ConnectFour::colorToString(color_t color) {
+    switch(color) {
+    case RED:
+        return "Red";
+    case BLACK:
+        return "Black";
+    default:
+        return "None";
+    }
+}
+
 void ConnectFour::increment_turn() {
     if(player_turn == RED)
         player_turn = BLACK;
@@ -204,6 +219,11 @@ void ConnectFour::increment_turn() {
         player_turn = RED;
         turn_number++;
     }
+    if(my_color == player_turn)
+        chat->turnIndicator->setText(tr("Turn %1 Your move").arg(turn_number));
+    else
+        chat->turnIndicator->setText(tr("Turn %1 Opponent's move").arg(turn_number));
+    chat->turnIndicator->setStyleSheet("Color : " + colorToString(player_turn));
     if(turn_number == 22) // Game has ended in a draw
         announce_winner(NONE);
 }

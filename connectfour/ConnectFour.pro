@@ -16,13 +16,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         connectfour.cpp \
     chatlog.cpp \
-    server.cpp \
     connectfoursquare.cpp \
     mainwindow.cpp
 
 HEADERS  += connectfour.h \
     chatlog.h \
-    server.h \
     connectfoursquare.h \
     mainwindow.h
 

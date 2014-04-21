@@ -90,8 +90,11 @@ void ChatLog::initializeChatPage()
     lowerChatLayout->addWidget(sayLineEdit);
     lowerChatLayout->addWidget(sayButton);
 
+    turnIndicator = new QLabel();
+
     chatLayout->addWidget(roomTextEdit, 1, 1);
     chatLayout->addWidget(lowerChat, 2, 1);
+    chatLayout->addWidget(turnIndicator, 3, 1);
 }
 
 void ChatLog::on_hostButton_clicked()

@@ -26,6 +26,8 @@ public:
     QUdpSocket *socketIn;
     QUdpSocket *socketOut;
 
+    QLabel *turnIndicator;
+
     void sendMessage(QString message);
 
 signals:

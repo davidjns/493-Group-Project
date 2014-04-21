@@ -22,6 +22,9 @@ private:
     QGridLayout *grid_layout;          // visual grid
 
     enum color_t { RED, BLACK, NONE };
+    static const QString colorNames[];
+    const QString colorToString(color_t);
+
     color_t** space_grid;               // data representation of grid
     color_t player_turn;                // red or black, who's turn it is
     bool made_a_move;
