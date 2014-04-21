@@ -45,8 +45,7 @@ void ConnectFour::initializeGrid()
     // create visual grid, leave blank for now
     grid_widget = new QWidget();
     grid_layout = new QGridLayout(grid_widget);
-    grid_layout->setHorizontalSpacing(0);
-    grid_layout->setVerticalSpacing(0);
+    grid_layout->setSpacing(0);
     QImage empty_cell(":/empty_square.png");
     for(int i = 0; i < NUM_ROWS; i++) {
         for(int j = 0; j < NUM_COLS; j++) {
@@ -86,6 +85,8 @@ void ConnectFour::announce_winner(color_t winner) {
     else
         message->setText("You Lose!");
     message->exec();
+    if(my_color == RED)
+        chat->closeServers();
     emit game_over();
 }
 
@@ -228,7 +229,7 @@ void ConnectFour::increment_turn() {
 }
 
 void ConnectFour::square_clicked(int column_number) {
-    if(player_turn == my_color)
+    if(player_turn == my_color && chat->getNumPlayers() == 2)
         if(place_token(column_number)) {
             made_a_move = true;
             QString message = tr("M%1").arg(column_number);

@@ -30,6 +30,7 @@ private:
     bool made_a_move;
     color_t my_color;                   // red or black, this instance's color
     int turn_number;
+    bool has_opponent;
 
     void initializeGrid();
     void increment_turn();

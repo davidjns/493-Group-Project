@@ -107,8 +107,8 @@ void ChatLog::initializeChatPage()
 
 void ChatLog::on_hostButton_clicked()
 {
-    QTcpServer *server = new QTcpServer();
-    QTcpServer *server2 = new QTcpServer();
+    server = new QTcpServer();
+    server2 = new QTcpServer();
 
     QTcpSocket s;
     s.connectToHost("8.8.8.8", 53);
@@ -145,6 +145,11 @@ void ChatLog::on_hostButton_clicked()
 
     emit became_host();
     displayAddressDialog(s.localAddress().toString());
+}
+
+void ChatLog::closeServers() {
+    server->close();
+    server2->close();
 }
 
 void ChatLog::on_joinButton_clicked()
@@ -264,4 +269,8 @@ void ChatLog::displayAddressDialog(QString address)
     layout->addWidget(label);
     dialog->setLayout(layout);
     dialog->show();
+}
+
+quint16 ChatLog::getNumPlayers() {
+    return numPlayers;
 }
