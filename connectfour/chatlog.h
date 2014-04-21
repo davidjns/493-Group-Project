@@ -74,6 +74,7 @@ private:
 
     void initializeLoginPage();
     void initializeChatPage();
+    void displayAddressDialog(QString address);
 
     void playerConnected(QString playerName);
     qint16 numPlayers;
