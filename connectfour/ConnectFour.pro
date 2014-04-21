@@ -26,3 +26,5 @@ HEADERS  += connectfour.h \
 
 RESOURCES += \
     resources.qrc
+
+LIBS += -lwsock32

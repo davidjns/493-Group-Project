@@ -50,6 +50,7 @@ private:
 
     QHostAddress hostAddress;
     quint16 portNumber;
+    quint16 clientPortNumber;
 
     QWidget *loginPage;
     QFrame *loginFrame;
@@ -59,6 +60,7 @@ private:
     QLineEdit *serverLineEdit;
     QLineEdit *portLineEdit;
     QLineEdit *userLineEdit;
+    QLabel *ipLabel;
 
     QWidget *chatPage;
     QFrame *chatFrame;

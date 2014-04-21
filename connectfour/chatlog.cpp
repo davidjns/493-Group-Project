@@ -15,6 +15,12 @@
 #include <QDialog>
 #include <QAction>
 
+#include "WinSock2.h"
+#include "WS2tcpip.h"
+#include "stdio.h"
+
+#define DEFAULT_PORT "27105";
+
 ChatLog::ChatLog(QWidget *parent) :
     QWidget(parent)
 {
@@ -74,7 +80,7 @@ void ChatLog::initializeChatPage()
     stackedWidget->addWidget(chatPage);
 
     chatFrame = new QFrame(chatPage);
-    chatFrame->setMinimumSize(250, 175);
+    chatFrame->setMinimumSize(250, 200);
     chatLayout = new QGridLayout(chatFrame);
 
     sayButton = new QPushButton("Send");
@@ -85,6 +91,7 @@ void ChatLog::initializeChatPage()
     connect(sayLineEdit, SIGNAL(returnPressed()), this, SLOT(on_sayButton_clicked()));
     roomTextEdit = new QTextEdit();
     roomTextEdit->setReadOnly(true);
+    roomTextEdit->setFixedWidth(275);
     clientsTextEdit = new QTextEdit();
     clientsTextEdit->setReadOnly(true);
     clientsTextEdit->setFixedWidth(100);
@@ -97,16 +104,45 @@ void ChatLog::initializeChatPage()
     lowerChatLayout->addWidget(sayLineEdit);
     lowerChatLayout->addWidget(sayButton);
 
+    QFont font;
+    font.setPointSize(13);
+    font.setBold(true);
+
     turnIndicator = new QLabel();
+    turnIndicator->setFrameStyle(QFrame::Panel | QFrame::Plain);
+    turnIndicator->setLineWidth(3);
+    turnIndicator->setFont(font);
+    ipLabel = new QLabel();
+    ipLabel->setFont(font);\
+    ipLabel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+    ipLabel->setLineWidth(3);
 
     chatLayout->addWidget(roomTextEdit, 1, 1);
     chatLayout->addWidget(clientsTextEdit, 1, 2);
     chatLayout->addWidget(lowerChat, 2, 1);
     chatLayout->addWidget(turnIndicator, 3, 1);
+    chatLayout->addWidget(ipLabel, 4, 1);
 }
 
 void ChatLog::on_hostButton_clicked()
 {
+    //WinSock Stuff
+//    struct addrInfo *result = NULL, *ptr = NULL, hints;
+//    ZeroMemory(&hints, sizeof(hints));
+//    hints.ai_family = AF_INET;
+//    hints.ai_socktype = SOCK_STREAM;
+//    hints.ai_protocol = IPPROTO_TCP;
+//    hints.ai_flags = AI_PASSIVE;
+
+//    // Resolve the local address and port to be used by the server
+//    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+//    if (iResult != 0) {
+//        printf("getaddrinfo failed: %d\n", iResult);
+//        WSACleanup();
+//        return 1;
+//    }
+
+    //Qt Socket Stuff
     QTcpServer *server = new QTcpServer();
     QTcpServer *server2 = new QTcpServer();
 
@@ -144,7 +180,12 @@ void ChatLog::on_hostButton_clicked()
     }
 
     emit became_host();
-    displayAddressDialog(s.localAddress().toString());
+    ipLabel->setText("Server Address: " + s.localAddress().toString());
+//    QFont font = ipLabel->font();
+//    font.setPointSize(13);
+//    font.setBold(true);
+//    ipLabel->setFont(font);
+    //displayAddressDialog(s.localAddress().toString());
 }
 
 void ChatLog::on_joinButton_clicked()
@@ -153,7 +194,9 @@ void ChatLog::on_joinButton_clicked()
 
     hostAddress = QHostAddress(serverName);
     portNumber = 4200;
+    clientPortNumber = portNumber+1;
     //portNumber = portLineEdit->text().toInt();
+
 
     if(socketIn->bind(hostAddress, portNumber+1))
     {
@@ -224,9 +267,12 @@ void ChatLog::processPendingDatagrams()
             }
             else if(messageType == QChar('P'))
             {
-                roomTextEdit->append(message);
-                QString playerName = message.split(" ").at(0);
-                playerConnected(playerName);
+                playerConnected(message);
+            }
+            else if(messageType == QChar('S'))
+            {
+                if(!host)
+                    playerConnected(message);
             }
         }
     }
@@ -240,7 +286,8 @@ void ChatLog::connected()
 
     userName = userLineEdit->text();
 
-    sendMessage("P" + QString(userLineEdit->text() + " has connected!\n"));
+    sendMessage("C" + QString(userLineEdit->text() + " has connected!\n"));
+    sendMessage("P" + QString(userLineEdit->text()));
 }
 
 void ChatLog::changePage()
@@ -254,14 +301,20 @@ void ChatLog::playerConnected(QString playerName)
     numPlayers++;
     QString string = QString::number(numPlayers) + ". " + playerName;
     clientsTextEdit->append(string);
+
+    if(host)
+        sendMessage("S" + QString(userName));
 }
 
 void ChatLog::displayAddressDialog(QString address)
 {
-    QDialog *dialog = new QDialog();
-    QVBoxLayout *layout = new QVBoxLayout();
-    QLabel *label = new QLabel("You have connected to server: " + address);
-    layout->addWidget(label);
-    dialog->setLayout(layout);
-    dialog->show();
+    //ipLabel->setText("You have connected to server: " + address);
+
+
+//    QDialog *dialog = new QDialog();
+//    QVBoxLayout *layout = new QVBoxLayout();
+//    QLabel *label = new QLabel("You have connected to server: " + address);
+//    layout->addWidget(label);
+//    dialog->setLayout(layout);
+//    dialog->show();
 }
