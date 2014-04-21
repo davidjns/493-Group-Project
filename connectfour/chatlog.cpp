@@ -1,5 +1,4 @@
 #include "chatlog.h"
-#include "server.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <QLineEdit>
@@ -115,6 +114,8 @@ void ChatLog::on_hostButton_clicked()
 
 //    portNumber = portLineEdit->text().toInt();
     portNumber = 4200;
+//    portNumber = 80;
+//    hostAddress = QHostAddress("31.170.160.74");
 
     bool success = server->listen(hostAddress, portNumber);
     bool success2 = server2->listen(hostAddress, portNumber+1);
