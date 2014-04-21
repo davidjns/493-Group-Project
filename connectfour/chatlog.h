@@ -66,6 +66,7 @@ private:
     QLineEdit *portLineEdit;
     QLineEdit *userLineEdit;
     QLabel *ipLabel;
+    QLabel *failedLabel;
 
     QWidget *chatPage;
     QFrame *chatFrame;
@@ -83,7 +84,7 @@ private:
 
     void initializeLoginPage();
     void initializeChatPage();
-    void displayAddressDialog(QString address);
+    void displayErrorDialog();
 
     void playerConnected(QString playerName);
     qint16 numPlayers;

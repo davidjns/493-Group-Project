@@ -14,6 +14,8 @@
 #include <QHBoxLayout>
 #include <QDialog>
 #include <QAction>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include "WinSock2.h"
 #include "WS2tcpip.h"
@@ -62,14 +64,16 @@ void ChatLog::initializeLoginPage()
 
     QLabel *label1 = new QLabel("User Name: ");
     QLabel *label2 = new QLabel("Server Name: ");
-    QLabel *label3 = new QLabel("Port Number: ");
+
+    failedLabel = new QLabel("Failed to connect to server.\nTry new server credentials.");
+    failedLabel->setStyleSheet("Color: Red");
+    failedLabel->setAlignment(Qt::AlignCenter);
+    failedLabel->hide();
 
     loginLayout->addWidget(label1, 1, 1);
     loginLayout->addWidget(userLineEdit, 1, 2);
     loginLayout->addWidget(label2, 2, 1);
     loginLayout->addWidget(serverLineEdit, 2, 2);
-    //loginLayout->addWidget(label3, 3, 1);
-    //loginLayout->addWidget(portLineEdit, 3, 2);
     loginLayout->addWidget(joinButton, 3, 2);
     loginLayout->addWidget(hostButton, 4, 2);
 }
@@ -112,10 +116,12 @@ void ChatLog::initializeChatPage()
     turnIndicator->setFrameStyle(QFrame::Panel | QFrame::Plain);
     turnIndicator->setLineWidth(3);
     turnIndicator->setFont(font);
+    turnIndicator->setAlignment(Qt::AlignCenter);
     ipLabel = new QLabel();
     ipLabel->setFont(font);\
     ipLabel->setFrameStyle(QFrame::Panel | QFrame::Plain);
     ipLabel->setLineWidth(3);
+    ipLabel->setAlignment(Qt::AlignCenter);
 
     chatLayout->addWidget(roomTextEdit, 1, 1);
     chatLayout->addWidget(clientsTextEdit, 1, 2);
@@ -128,21 +134,6 @@ void ChatLog::on_hostButton_clicked()
 {
     server = new QTcpServer();
     server2 = new QTcpServer();
-    //WinSock Stuff
-//    struct addrInfo *result = NULL, *ptr = NULL, hints;
-//    ZeroMemory(&hints, sizeof(hints));
-//    hints.ai_family = AF_INET;
-//    hints.ai_socktype = SOCK_STREAM;
-//    hints.ai_protocol = IPPROTO_TCP;
-//    hints.ai_flags = AI_PASSIVE;
-
-//    // Resolve the local address and port to be used by the server
-//    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
-//    if (iResult != 0) {
-//        printf("getaddrinfo failed: %d\n", iResult);
-//        WSACleanup();
-//        return 1;
-//    }
 
     //Qt Socket Stuff
 
@@ -171,21 +162,18 @@ void ChatLog::on_hostButton_clicked()
         if(socketIn->bind(hostAddress, portNumber))
         {
             connected();
+            emit became_host();
             qDebug() << "connected to port 4200";
         }
         else
         {
+            failedLabel->show();
+            serverLineEdit->clear();
             qDebug() << "failed to connect";
         }
     }
 
-    emit became_host();
     ipLabel->setText("Server Address: " + s.localAddress().toString());
-//    QFont font = ipLabel->font();
-//    font.setPointSize(13);
-//    font.setBold(true);
-//    ipLabel->setFont(font);
-    //displayAddressDialog(s.localAddress().toString());
 }
 
 void ChatLog::closeServers() {
@@ -200,23 +188,24 @@ void ChatLog::on_joinButton_clicked()
     hostAddress = QHostAddress(serverName);
     portNumber = 4200;
     clientPortNumber = portNumber+1;
-    //portNumber = portLineEdit->text().toInt();
 
 
     if(socketIn->bind(hostAddress, portNumber+1))
     {
         connected();
+        emit player_joined();
         qDebug() << "connected to port 4201";
     }
     else
     {
-        socketIn->connectToHost(hostAddress, portNumber);
-        connected();
-
+        //socketIn->connectToHost(hostAddress, portNumber);
+        //connected();
+        displayErrorDialog();
+        //failedLabel->show();
+        serverLineEdit->clear();
         qDebug() << "failed to connect";
     }
 
-    emit player_joined();
     ipLabel->setText("Server Address: " + serverName);
 }
 
@@ -312,17 +301,20 @@ void ChatLog::playerConnected(QString playerName)
         sendMessage("S" + QString(userName));
 }
 
-void ChatLog::displayAddressDialog(QString address)
+void ChatLog::displayErrorDialog()
 {
-    //ipLabel->setText("You have connected to server: " + address);
+    QDialog *dialog = new QDialog(loginPage);
+    QGridLayout *layout = new QGridLayout();
+    failedLabel = new QLabel("Failed to connect to server.\nTry new server credentials.");
+    failedLabel->setStyleSheet("Color: Red");
+    failedLabel->setAlignment(Qt::AlignCenter);
+    layout->addWidget(failedLabel, 1, 1);
+    dialog->setLayout(layout);
 
+    QRect scr = QApplication::desktop()->screenGeometry();
+    dialog->move(scr.center() - dialog->rect().center());
 
-//    QDialog *dialog = new QDialog();
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    QLabel *label = new QLabel("You have connected to server: " + address);
-//    layout->addWidget(label);
-//    dialog->setLayout(layout);
-//    dialog->show();
+    dialog->show();
 }
 
 quint16 ChatLog::getNumPlayers() {
